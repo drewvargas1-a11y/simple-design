@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Service — Simple Design</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; -webkit-font-smoothing: antialiased; margin: 0; padding: 0; }
+    body { background: #0A0A0A; font-family: 'Inter', sans-serif; color: #F0EBE3; }
+    .bebas { font-family: 'Bebas Neue', sans-serif; }
+
+    /* NAV */
+    .nav-pill {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+      z-index: 200; background: #fff; border-radius: 100px;
+      padding: 11px 14px 11px 22px; display: flex; align-items: center;
+      gap: 28px; box-shadow: 0 4px 40px rgba(0,0,0,0.3); white-space: nowrap;
+    }
+    .nav-pill .logo { font-family: 'Bebas Neue', sans-serif; font-size: 19px; color: #000; letter-spacing: 0.03em; text-decoration: none; }
+    .nav-pill a.link { font-size: 12px; font-weight: 500; color: #888; text-decoration: none; transition: color 0.2s; }
+    .nav-pill a.link:hover { color: #000; }
+    .nav-pill .pill-cta { background: #000; color: #fff; padding: 8px 20px; border-radius: 100px; font-size: 12px; font-weight: 600; letter-spacing: 0.03em; text-decoration: none; }
+
+    .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 6px 8px; flex-direction: column; gap: 5px; }
+    .hamburger span { display: block; width: 20px; height: 2px; background: #000; border-radius: 2px; }
+    .mobile-menu { display: none; position: fixed; inset: 0; background: #fff; z-index: 199; flex-direction: column; padding: 96px 32px 48px; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: #000; text-decoration: none; border-bottom: 1px solid #F0F0F0; padding: 14px 0; }
+
+    /* HERO */
+    .hero { padding: 140px 0 80px; border-bottom: 1px solid #1A1A1A; }
+
+    /* CONTENT */
+    .content { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+
+    .section { padding: 56px 0; border-bottom: 1px solid #1A1A1A; }
+    .section:last-child { border-bottom: none; }
+    .section-num { font-size: 10px; font-weight: 700; color: #FF4520; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 12px; }
+    .section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(32px,4vw,48px); color: #F0EBE3; letter-spacing: -0.01em; line-height: 1; margin-bottom: 20px; }
+    .section p { font-size: 15px; color: #666; line-height: 1.85; margin-bottom: 14px; }
+    .section p:last-child { margin-bottom: 0; }
+    .section ul { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+    .section ul li { font-size: 15px; color: #666; line-height: 1.7; padding-left: 20px; position: relative; }
+    .section ul li::before { content: '→'; color: #FF4520; position: absolute; left: 0; font-size: 13px; }
+
+    .highlight-box { background: rgba(255,69,32,0.06); border: 1px solid rgba(255,69,32,0.2); border-radius: 8px; padding: 20px 24px; margin: 20px 0; }
+    .highlight-box p { color: #FF8060; margin: 0; font-size: 14px; line-height: 1.7; }
+    .highlight-box strong { color: #FF4520; }
+
+    footer { background: #000; padding: 36px 0; border-top: 1px solid #111; }
+    .footer-inner { max-width: 760px; margin: 0 auto; padding: 0 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
+
+    @media (max-width: 768px) {
+      .nav-pill { left: 16px !important; right: 16px !important; transform: none !important; width: auto !important; padding: 10px 12px 10px 18px !important; gap: 0 !important; justify-content: space-between; }
+      .nav-pill a.link, .nav-pill .pill-cta { display: none !important; }
+      .hamburger { display: flex !important; }
+      .hero { padding: 110px 0 56px; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/">Home</a>
+  <a href="/#services">Services</a>
+  <a href="/#contact">Get a Quote</a>
+  <a href="/pay">Pay Invoice</a>
+</div>
+
+<nav class="nav-pill">
+  <a href="/" class="logo">Simple.</a>
+  <a href="/#services" class="link">Services</a>
+  <a href="/#work" class="link">Work</a>
+  <a href="/#contact" class="link">Contact</a>
+  <a href="/pay" class="link">Pay Invoice</a>
+  <a href="/#contact" class="pill-cta">Get a Quote</a>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="hero">
+  <div class="content">
+    <p style="font-size:10px;font-weight:700;color:#FF4520;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:14px;">Legal</p>
+    <h1 class="bebas" style="font-size:clamp(56px,8vw,96px);color:#F0EBE3;letter-spacing:-0.01em;line-height:0.92;margin-bottom:20px;">
+      Terms of<br/>Service.
+    </h1>
+    <p style="font-size:14px;color:#444;line-height:1.7;">
+      Last updated: April 2025 &nbsp;·&nbsp; Simple Design &nbsp;·&nbsp; Questions? <a href="/#contact" style="color:#FF4520;text-decoration:none;">Contact us</a>
+    </p>
+  </div>
+</div>
+
+<div style="padding: 0 0 80px;">
+  <div class="content">
+
+    <div class="section">
+      <p class="section-num">01</p>
+      <h2 class="section-title">Services</h2>
+      <p>Simple Design provides website design, website development, and website maintenance & hosting services for small businesses and individuals. All services are outlined and agreed upon before work begins.</p>
+      <p>We reserve the right to decline any project at our discretion.</p>
+    </div>
+
+    <div class="section">
+      <p class="section-num">02</p>
+      <h2 class="section-title">Payment</h2>
+      <p>All projects require a <strong style="color:#F0EBE3;">50% deposit</strong> before work begins. The remaining 50% is due upon project completion, before the final website is delivered or made live.</p>
+      <p>Monthly services (Website Maintenance & Hosting) are billed at the start of each billing cycle. Failure to pay within 7 days may result in suspension of services.</p>
+      <p>All payments are processed securely through Stripe. We do not store card information.</p>
+      <div class="highlight-box">
+        <p><strong>Late payments:</strong> Invoices unpaid after 14 days are subject to a $25 late fee. Projects will not be delivered until balances are cleared.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-num">03</p>
+      <h2 class="section-title">Revisions</h2>
+      <p>Each project includes <strong style="color:#F0EBE3;">two rounds of revisions</strong> at no additional charge. A revision round is defined as a consolidated list of changes submitted at one time.</p>
+      <p>Additional revision rounds beyond the included two are billed at $75/hour. Major scope changes (adding new pages, features, or sections not in the original agreement) are quoted separately.</p>
+    </div>
+
+    <div class="section">
+      <p class="section-num">04</p>
+      <h2 class="section-title">Timeline & Delivery</h2>
+      <p>Project timelines are estimated at the start of each engagement. Typical delivery is within 2 weeks of receiving the deposit and all required content (text, images, branding).</p>
+      <p>Delays caused by the client (late content, unresponsiveness over 7 days) may extend the timeline. Simple Design is not liable for delays caused by third-party services (domain registrars, hosting platforms, etc.).</p>
+    </div>
+
+    <div class="section">
+      <p class="section-num">05</p>
+      <h2 class="section-title">Ownership & Intellectual Property</h2>
+      <p>Upon receipt of full payment, the client owns the final website and all custom design assets created for their project.</p>
+      <p>Simple Design retains the right to display completed work in our portfolio and marketing materials unless the client requests otherwise in writing.</p>
+      <p>Any third-party assets (stock photos, fonts, plugins) remain subject to their respective licenses.</p>
+    </div>
+
+    <div class="section">
+      <p class="section-num">06</p>
+      <h2 class="section-title">Website Transfer</h2>
+      <p>Clients wishing to transfer their website to a new developer, host, or platform may do so at any time after full payment has been received.</p>
+      <div class="highlight-box">
+        <p><strong>Transfer Fee: $250</strong><br/>A one-time transfer fee of $250 applies to all website handoffs. This covers the preparation of all source files, documentation, account transfers, and a 30-minute handoff call to walk the new party through the project.</p>
+      </div>
+      <p>The transfer fee does not apply if the client is simply downloading their files for personal backup. It applies when transferring active management to a third party.</p>
+      <p>Monthly maintenance plans are automatically cancelled upon transfer. No refunds are issued for the current billing month.</p>
+    </div>
+
+    <div class="section">
+      <p class="section-num">07</p>
+      <h2 class="section-title">Hosting & Maintenance Plans</h2>
+      <p>Monthly maintenance plans include hosting, basic updates, and technical support. Plans are billed monthly and can be cancelled with 30 days written notice.</p>
+      <ul>
+        <li>Hosting costs are included in the monthly fee</li>
+        <li>Minor content updates (text, images) are included</li>
+        <li>Major redesigns or new features are quoted separately</li>
+        <li>Cancellation requires 30 days written notice via email</li>
+      </ul>
+      <p style="margin-top:16px;">Upon cancellation, clients receive all source files within 5 business days. A $250 transfer fee applies if files are being handed to a new developer.</p>
+    </div>
+
+    <div class="section">
+      <p class="section-num">08</p>
+      <h2 class="section-title">Cancellation</h2>
+      <p>Projects cancelled by the client after work has begun forfeit the 50% deposit. If more than 50% of the work has been completed, the client is responsible for payment proportional to work delivered.</p>
+      <p>Simple Design reserves the right to cancel any project with 7 days notice. In this case, a full refund of any payments made will be issued.</p>
+    </div>
+
+    <div class="section">
+      <p class="section-num">09</p>
+      <h2 class="section-title">Limitation of Liability</h2>
+      <p>Simple Design is not liable for any indirect, incidental, or consequential damages arising from the use of delivered websites or services. Our total liability is limited to the amount paid for the specific project or service in question.</p>
+      <p>We are not responsible for losses caused by third-party outages, domain expiration, or hosting platform issues.</p>
+    </div>
+
+    <div class="section">
+      <p class="section-num">10</p>
+      <h2 class="section-title">Governing Law</h2>
+      <p>These terms are governed by the laws of the United States. Any disputes will be resolved in good faith between both parties before any legal action is pursued.</p>
+      <p>By engaging Simple Design's services, you agree to these terms in full.</p>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <span class="bebas" style="font-size:22px;color:#F0EBE3;letter-spacing:0.03em;">Simple<span style="color:#FF4520;">.</span></span>
+    <nav style="display:flex;gap:24px;flex-wrap:wrap;">
+      <a href="/" style="font-size:11px;color:#3A3A3A;text-decoration:none;letter-spacing:0.08em;text-transform:uppercase;">Home</a>
+      <a href="/contract" style="font-size:11px;color:#3A3A3A;text-decoration:none;letter-spacing:0.08em;text-transform:uppercase;">Client Contract</a>
+      <a href="/pay" style="font-size:11px;color:#3A3A3A;text-decoration:none;letter-spacing:0.08em;text-transform:uppercase;">Pay Invoice</a>
+    </nav>
+    <p style="font-size:11px;color:#2A2A2A;">© 2025 Simple Design. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburgerBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+    document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+  });
+</script>
+</body>
+</html>

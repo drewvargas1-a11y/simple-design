@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pay Invoice — Simple Design</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; -webkit-font-smoothing: antialiased; margin: 0; padding: 0; }
+    body { background: #0A0A0A; font-family: 'Inter', sans-serif; color: #F0EBE3; min-height: 100vh; }
+    .bebas { font-family: 'Bebas Neue', sans-serif; }
+
+    /* NAV */
+    .nav-pill {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+      z-index: 200; background: #fff; border-radius: 100px;
+      padding: 11px 14px 11px 22px; display: flex; align-items: center;
+      gap: 28px; box-shadow: 0 4px 40px rgba(0,0,0,0.3); white-space: nowrap;
+    }
+    .nav-pill .logo { font-family: 'Bebas Neue', sans-serif; font-size: 19px; color: #000; letter-spacing: 0.03em; text-decoration: none; }
+    .nav-pill a.link { font-size: 12px; font-weight: 500; color: #888; text-decoration: none; transition: color 0.2s; }
+    .nav-pill a.link:hover { color: #000; }
+    .nav-pill .pill-cta { background: #000; color: #fff; padding: 8px 20px; border-radius: 100px; font-size: 12px; font-weight: 600; letter-spacing: 0.03em; text-decoration: none; }
+
+    .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 6px 8px; flex-direction: column; gap: 5px; }
+    .hamburger span { display: block; width: 20px; height: 2px; background: #000; border-radius: 2px; }
+    .mobile-menu { display: none; position: fixed; inset: 0; background: #fff; z-index: 199; flex-direction: column; padding: 96px 32px 48px; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: #000; text-decoration: none; border-bottom: 1px solid #F0F0F0; padding: 14px 0; }
+
+    /* PAGE */
+    .page-wrap { max-width: 680px; margin: 0 auto; padding: 140px 24px 80px; }
+
+    .page-label { font-size: 10px; font-weight: 700; color: #FF4520; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 14px; }
+    .page-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(52px, 8vw, 88px); color: #F0EBE3; letter-spacing: -0.01em; line-height: 0.92; margin-bottom: 16px; }
+    .page-sub { font-size: 14px; color: #555; line-height: 1.7; margin-bottom: 48px; }
+
+    /* SERVICE OPTIONS */
+    .service-option {
+      border: 1px solid #1E1E1E;
+      border-radius: 8px;
+      padding: 20px 22px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .service-option:hover { border-color: #333; background: rgba(255,255,255,0.02); }
+    .service-option.selected { border-color: #FF4520; background: rgba(255,69,32,0.05); }
+    .svc-label { font-size: 14px; font-weight: 600; color: #F0EBE3; }
+    .svc-range { font-size: 12px; color: #555; margin-top: 3px; }
+    .svc-price { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: #FF4520; letter-spacing: 0.02em; white-space: nowrap; }
+
+    /* FORM */
+    .field-group { display: flex; flex-direction: column; gap: 14px; margin-top: 32px; }
+    .field { display: flex; flex-direction: column; gap: 8px; }
+    .field label { font-size: 10px; font-weight: 700; color: #444; letter-spacing: 0.15em; text-transform: uppercase; }
+    .field input {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid #222;
+      border-radius: 4px;
+      padding: 13px 16px;
+      color: #F0EBE3;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .field input:focus { border-color: #FF4520; }
+    .field input::placeholder { color: #3A3A3A; }
+
+    .error-msg { font-size: 12px; color: #FF4520; margin-top: 8px; display: none; }
+    .error-msg.show { display: block; }
+
+    .pay-btn {
+      width: 100%;
+      margin-top: 24px;
+      background: #FF4520;
+      color: #fff;
+      border: none;
+      padding: 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .pay-btn:hover { background: #E03810; transform: translateY(-1px); }
+    .pay-btn:active { transform: translateY(0); }
+
+    .secure-note { font-size: 11px; color: #333; text-align: center; margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .secure-note svg { flex-shrink: 0; }
+
+    @media (max-width: 768px) {
+      .nav-pill { left: 16px !important; right: 16px !important; transform: none !important; width: auto !important; padding: 10px 12px 10px 18px !important; gap: 0 !important; justify-content: space-between; }
+      .nav-pill a.link, .nav-pill .pill-cta { display: none !important; }
+      .hamburger { display: flex !important; }
+      .page-wrap { padding: 120px 20px 60px; }
+      .service-option { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/">Home</a>
+  <a href="/#services">Services</a>
+  <a href="/#contact">Get a Quote</a>
+  <a href="/terms">Terms</a>
+</div>
+
+<nav class="nav-pill">
+  <a href="/" class="logo">Simple.</a>
+  <a href="/#services" class="link">Services</a>
+  <a href="/#work" class="link">Work</a>
+  <a href="/#contact" class="link">Contact</a>
+  <a href="/#contact" class="pill-cta">Get a Quote</a>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="page-wrap">
+  <p class="page-label">Client Portal</p>
+  <h1 class="page-title">Pay Your<br/>Invoice.</h1>
+  <p class="page-sub">Select your service below, enter your details, and you'll be taken to a secure Stripe checkout to complete payment.</p>
+
+  <!-- Service Options -->
+  <div>
+    <p style="font-size:10px;font-weight:700;color:#444;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:16px;">Select Your Service</p>
+
+    <div class="service-option" onclick="selectService(this, 'https://buy.stripe.com/14A7sFeXO85f4NCeaF5os00')">
+      <div>
+        <p class="svc-label">Website Design — Basic</p>
+        <p class="svc-range">Single page · Up to 5 sections · Standard design</p>
+      </div>
+      <p class="svc-price">$500</p>
+    </div>
+
+    <div class="service-option" onclick="selectService(this, 'https://buy.stripe.com/dRmcMZaHy1GR4NCfeJ5os01')">
+      <div>
+        <p class="svc-label">Website Design — Intermediate</p>
+        <p class="svc-range">Up to 8 sections · Custom layout · Contact form</p>
+      </div>
+      <p class="svc-price">$1,000</p>
+    </div>
+
+    <div class="service-option" onclick="selectService(this, 'https://buy.stripe.com/dRmfZbdTK2KVeoc0jP5os02')">
+      <div>
+        <p class="svc-label">Website Design — Advanced</p>
+        <p class="svc-range">Multi-page · Full custom design · Animations</p>
+      </div>
+      <p class="svc-price">$2,000+</p>
+    </div>
+
+    <div class="service-option" onclick="selectService(this, 'https://buy.stripe.com/9B69AN6ri4T31BqaYt5os03')">
+      <div>
+        <p class="svc-label">Website Maintenance &amp; Hosting</p>
+        <p class="svc-range">Monthly plan · Hosting + updates + support</p>
+      </div>
+      <p class="svc-price">$75/mo</p>
+    </div>
+  </div>
+
+  <p class="error-msg" id="selectError">Please select a service above before continuing.</p>
+
+  <!-- Form -->
+  <div class="field-group">
+    <div class="field">
+      <label>Your Name</label>
+      <input type="text" id="clientName" placeholder="Full name" />
+    </div>
+    <div class="field">
+      <label>Email Address</label>
+      <input type="email" id="clientEmail" placeholder="you@yoursite.com" />
+    </div>
+  </div>
+
+  <p class="error-msg" id="formError">Please enter your name and a valid email address.</p>
+
+  <button class="pay-btn" onclick="handlePay(event)">Continue to Secure Payment →</button>
+
+  <p class="secure-note">
+    <svg width="12" height="14" viewBox="0 0 12 14" fill="none"><rect x="1" y="6" width="10" height="7" rx="1.5" fill="#333"/><path d="M3 6V4.5a3 3 0 0 1 6 0V6" stroke="#555" stroke-width="1.5" stroke-linecap="round"/></svg>
+    Payments processed securely via Stripe. We never store your card details.
+  </p>
+</div>
+
+<script>
+  let selectedUrl = null;
+
+  function selectService(el, url) {
+    document.querySelectorAll('.service-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedUrl = url;
+    document.getElementById('selectError').classList.remove('show');
+  }
+
+  function handlePay(e) {
+    e.preventDefault();
+    const name = document.getElementById('clientName').value.trim();
+    const email = document.getElementById('clientEmail').value.trim();
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    if (!selectedUrl) {
+      document.getElementById('selectError').classList.add('show');
+      return;
+    }
+    if (!name || !emailOk) {
+      document.getElementById('formError').classList.add('show');
+      return;
+    }
+    document.getElementById('formError').classList.remove('show');
+    const finalUrl = selectedUrl + '?prefilled_email=' + encodeURIComponent(email);
+    window.open(finalUrl, '_blank');
+  }
+
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburgerBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+    document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+  });
+</script>
+</body>
+</html>

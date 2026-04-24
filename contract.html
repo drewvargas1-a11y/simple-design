@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Contract — Simple Design</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; -webkit-font-smoothing: antialiased; margin: 0; padding: 0; }
+    body { background: #0A0A0A; font-family: 'Inter', sans-serif; color: #F0EBE3; }
+    .bebas { font-family: 'Bebas Neue', sans-serif; }
+
+    /* NAV */
+    .nav-pill {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+      z-index: 200; background: #fff; border-radius: 100px;
+      padding: 11px 14px 11px 22px; display: flex; align-items: center;
+      gap: 28px; box-shadow: 0 4px 40px rgba(0,0,0,0.3); white-space: nowrap;
+    }
+    .nav-pill .logo { font-family: 'Bebas Neue', sans-serif; font-size: 19px; color: #000; letter-spacing: 0.03em; text-decoration: none; }
+    .nav-pill a.link { font-size: 12px; font-weight: 500; color: #888; text-decoration: none; transition: color 0.2s; }
+    .nav-pill a.link:hover { color: #000; }
+    .nav-pill .pill-cta { background: #000; color: #fff; padding: 8px 20px; border-radius: 100px; font-size: 12px; font-weight: 600; letter-spacing: 0.03em; text-decoration: none; }
+
+    .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 6px 8px; flex-direction: column; gap: 5px; }
+    .hamburger span { display: block; width: 20px; height: 2px; background: #000; border-radius: 2px; }
+    .mobile-menu { display: none; position: fixed; inset: 0; background: #fff; z-index: 199; flex-direction: column; padding: 96px 32px 48px; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: #000; text-decoration: none; border-bottom: 1px solid #F0F0F0; padding: 14px 0; }
+
+    /* NO-PRINT ZONE */
+    .no-print { }
+
+    /* CONTRACT CARD */
+    .contract-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 140px 24px 80px;
+    }
+
+    .contract-card {
+      background: #fff;
+      color: #111;
+      border-radius: 8px;
+      padding: 56px 64px;
+    }
+
+    .contract-header { text-align: center; margin-bottom: 48px; padding-bottom: 32px; border-bottom: 2px solid #111; }
+    .contract-header .logo-text { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: #000; letter-spacing: 0.03em; }
+    .contract-header .logo-text span { color: #FF4520; }
+    .contract-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: #111; letter-spacing: -0.01em; line-height: 1; margin-top: 8px; }
+    .contract-header .contract-date { font-size: 12px; color: #888; margin-top: 8px; }
+
+    /* SECTION */
+    .cs { margin-bottom: 36px; }
+    .cs h2 { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: #000; letter-spacing: 0.05em; margin-bottom: 16px; padding-bottom: 6px; border-bottom: 1px solid #E0E0E0; }
+    .cs p { font-size: 13px; color: #444; line-height: 1.75; margin-bottom: 10px; }
+    .cs p:last-child { margin-bottom: 0; }
+    .cs ul { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+    .cs ul li { font-size: 13px; color: #444; padding-left: 16px; position: relative; line-height: 1.65; }
+    .cs ul li::before { content: '→'; color: #FF4520; position: absolute; left: 0; font-size: 12px; }
+
+    /* FIELDS */
+    .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .field-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    .field-single { }
+    .fi-wrap { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .fi-wrap label { font-size: 10px; font-weight: 700; color: #888; letter-spacing: 0.14em; text-transform: uppercase; }
+    .fi-wrap input, .fi-wrap select, .fi-wrap textarea {
+      border: none; border-bottom: 1.5px solid #CCC; padding: 8px 0;
+      font-size: 14px; font-family: 'Inter', sans-serif; color: #111;
+      background: transparent; outline: none; width: 100%;
+      transition: border-color 0.2s;
+    }
+    .fi-wrap input:focus, .fi-wrap select:focus, .fi-wrap textarea:focus { border-color: #FF4520; }
+    .fi-wrap textarea { resize: none; }
+
+    /* HIGHLIGHT BOX */
+    .highlight-box { background: #FFF3F0; border-left: 3px solid #FF4520; padding: 16px 20px; margin: 16px 0; border-radius: 0 4px 4px 0; }
+    .highlight-box p { font-size: 13px; color: #333; margin: 0; line-height: 1.65; }
+    .highlight-box strong { color: #FF4520; }
+
+    /* SIGNATURES */
+    .sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 16px; }
+    .sig-box { }
+    .sig-line { border-bottom: 1.5px solid #333; height: 44px; margin-bottom: 8px; }
+    .sig-label { font-size: 11px; color: #888; }
+
+    /* PRINT BUTTON */
+    .print-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #FF4520; color: #fff; padding: 13px 28px;
+      border-radius: 6px; font-size: 13px; font-weight: 600;
+      letter-spacing: 0.04em; border: none; cursor: pointer;
+      text-decoration: none; margin-bottom: 32px;
+      transition: background 0.2s;
+    }
+    .print-btn:hover { background: #E03810; }
+
+    footer { background: #000; padding: 36px 0; border-top: 1px solid #111; margin-top: 0; }
+    .footer-inner { max-width: 760px; margin: 0 auto; padding: 0 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
+
+    /* PRINT STYLES */
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #fff !important; }
+      .contract-wrap { padding: 0 !important; max-width: 100% !important; }
+      .contract-card { box-shadow: none !important; border-radius: 0 !important; padding: 32px !important; }
+      footer { display: none !important; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-pill { left: 16px !important; right: 16px !important; transform: none !important; width: auto !important; padding: 10px 12px 10px 18px !important; gap: 0 !important; justify-content: space-between; }
+      .nav-pill a.link, .nav-pill .pill-cta { display: none !important; }
+      .hamburger { display: flex !important; }
+      .contract-card { padding: 32px 20px; }
+      .field-grid { grid-template-columns: 1fr; }
+      .field-grid-3 { grid-template-columns: 1fr 1fr; }
+      .sig-grid { grid-template-columns: 1fr; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/">Home</a>
+  <a href="/#services">Services</a>
+  <a href="/#contact">Get a Quote</a>
+  <a href="/pay">Pay Invoice</a>
+</div>
+
+<nav class="nav-pill no-print">
+  <a href="/" class="logo">Simple.</a>
+  <a href="/#services" class="link">Services</a>
+  <a href="/#work" class="link">Work</a>
+  <a href="/#contact" class="link">Contact</a>
+  <a href="/pay" class="link">Pay Invoice</a>
+  <a href="/#contact" class="pill-cta">Get a Quote</a>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="contract-wrap">
+
+  <!-- Print Button -->
+  <div class="no-print" style="margin-bottom:24px;">
+    <p style="font-size:10px;font-weight:700;color:#FF4520;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:14px;">Client Documents</p>
+    <h1 class="bebas" style="font-size:clamp(48px,7vw,80px);color:#F0EBE3;letter-spacing:-0.01em;line-height:0.92;margin-bottom:20px;">Client<br/>Contract.</h1>
+    <p style="font-size:14px;color:#555;line-height:1.7;margin-bottom:28px;">Fill in the details below, then print or save as PDF to sign and return.</p>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <!-- Contract Card -->
+  <div class="contract-card">
+
+    <div class="contract-header">
+      <div class="logo-text">Simple<span>.</span></div>
+      <h1>Web Design Contract</h1>
+      <p class="contract-date">Date: <span id="autoDate"></span></p>
+    </div>
+
+    <!-- Client Info -->
+    <div class="cs">
+      <h2>Client Information</h2>
+      <div class="field-grid">
+        <div class="fi-wrap">
+          <label>Client Full Name</label>
+          <input type="text" placeholder="Jane Smith" />
+        </div>
+        <div class="fi-wrap">
+          <label>Business Name</label>
+          <input type="text" placeholder="Acme Co. (if applicable)" />
+        </div>
+        <div class="fi-wrap">
+          <label>Email Address</label>
+          <input type="email" placeholder="jane@example.com" />
+        </div>
+        <div class="fi-wrap">
+          <label>Phone Number</label>
+          <input type="tel" placeholder="(555) 000-0000" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Project Details -->
+    <div class="cs">
+      <h2>Project Details</h2>
+      <div class="fi-wrap">
+        <label>Service Type</label>
+        <select>
+          <option value="">Select a service</option>
+          <option>Website Design — Basic ($500)</option>
+          <option>Website Design — Intermediate ($1,000)</option>
+          <option>Website Design — Advanced ($2,000+)</option>
+          <option>Website Maintenance & Hosting ($75/mo)</option>
+        </select>
+      </div>
+      <div class="fi-wrap">
+        <label>Project Description</label>
+        <textarea rows="4" placeholder="Describe the website, goals, and any specific requirements..."></textarea>
+      </div>
+      <div class="field-grid">
+        <div class="fi-wrap">
+          <label>Estimated Start Date</label>
+          <input type="text" placeholder="e.g. May 1, 2025" />
+        </div>
+        <div class="fi-wrap">
+          <label>Estimated Completion Date</label>
+          <input type="text" placeholder="e.g. May 15, 2025" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment Terms -->
+    <div class="cs">
+      <h2>Payment Terms</h2>
+      <div class="field-grid">
+        <div class="fi-wrap">
+          <label>Total Project Fee ($)</label>
+          <input type="text" placeholder="e.g. $1,000.00" />
+        </div>
+        <div class="fi-wrap">
+          <label>Deposit Due (50%)</label>
+          <input type="text" placeholder="e.g. $500.00" />
+        </div>
+        <div class="fi-wrap">
+          <label>Deposit Due Date</label>
+          <input type="text" placeholder="e.g. April 28, 2025" />
+        </div>
+        <div class="fi-wrap">
+          <label>Final Payment Due Date</label>
+          <input type="text" placeholder="Upon project completion" />
+        </div>
+      </div>
+      <p>All payments are processed via Stripe. A 50% deposit is required before work begins. The remaining 50% is due upon completion, before the site goes live. Invoices unpaid after 14 days are subject to a $25 late fee.</p>
+    </div>
+
+    <!-- Key Terms -->
+    <div class="cs">
+      <h2>Agreement Terms</h2>
+      <ul>
+        <li>This contract includes <strong>2 rounds of revisions</strong> at no additional charge. Additional rounds are billed at $75/hour.</li>
+        <li>The client retains full ownership of the website and all custom assets upon receipt of full payment.</li>
+        <li>Simple Design retains the right to display completed work in our portfolio unless requested otherwise in writing.</li>
+        <li>Projects cancelled after work begins forfeit the 50% deposit.</li>
+        <li>Typical delivery is within 2 weeks of deposit and receipt of all content (text, images, branding).</li>
+      </ul>
+
+      <div class="highlight-box">
+        <p><strong>Website Transfer Fee: $250</strong> — If the client wishes to transfer the website to a new developer, hosting provider, or manager at any time after project completion, a one-time $250 transfer fee applies. This covers source file preparation, documentation, account transfers, and a 30-minute handoff call.</p>
+      </div>
+
+      <p>By signing below, both parties agree to the terms outlined in this contract and Simple Design's full <strong>Terms of Service</strong> available at simpledesign.studio/terms.</p>
+    </div>
+
+    <!-- Signatures -->
+    <div class="cs">
+      <h2>Signatures</h2>
+      <div class="sig-grid">
+        <div class="sig-box">
+          <div class="sig-line"></div>
+          <p class="sig-label">Client Signature &amp; Date</p>
+        </div>
+        <div class="sig-box">
+          <div class="sig-line"></div>
+          <p class="sig-label">Simple Design &amp; Date</p>
+        </div>
+      </div>
+      <div class="sig-grid" style="margin-top:20px;">
+        <div class="sig-box">
+          <div class="sig-line"></div>
+          <p class="sig-label">Client Printed Name</p>
+        </div>
+        <div class="sig-box">
+          <div class="sig-line" style="border-bottom-color:#ccc;"></div>
+          <p class="sig-label" style="color:#ccc;">Simple Design Representative</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="no-print">
+  <div class="footer-inner">
+    <span class="bebas" style="font-size:22px;color:#F0EBE3;letter-spacing:0.03em;">Simple<span style="color:#FF4520;">.</span></span>
+    <nav style="display:flex;gap:24px;flex-wrap:wrap;">
+      <a href="/" style="font-size:11px;color:#3A3A3A;text-decoration:none;letter-spacing:0.08em;text-transform:uppercase;">Home</a>
+      <a href="/terms" style="font-size:11px;color:#3A3A3A;text-decoration:none;letter-spacing:0.08em;text-transform:uppercase;">Terms of Service</a>
+      <a href="/pay" style="font-size:11px;color:#3A3A3A;text-decoration:none;letter-spacing:0.08em;text-transform:uppercase;">Pay Invoice</a>
+    </nav>
+    <p style="font-size:11px;color:#2A2A2A;">© 2025 Simple Design. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  // Auto-fill today's date
+  const d = new Date();
+  document.getElementById('autoDate').textContent = d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburgerBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+    document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simple Design — Web Design & Digital Presence</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; -webkit-font-smoothing: antialiased; margin: 0; padding: 0; }
+    body { background: #000; font-family: 'Inter', sans-serif; }
+    .bebas { font-family: 'Bebas Neue', sans-serif; }
+
+    /* NAV */
+    .nav-pill {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+      z-index: 200; background: #fff; border-radius: 100px;
+      padding: 11px 14px 11px 22px; display: flex; align-items: center;
+      gap: 28px; box-shadow: 0 4px 40px rgba(0,0,0,0.3), 0 1px 4px rgba(0,0,0,0.2);
+      white-space: nowrap;
+    }
+    .nav-pill .logo { font-family: 'Bebas Neue', sans-serif; font-size: 19px; color: #000; letter-spacing: 0.03em; text-decoration: none; }
+    .nav-pill a.link { font-size: 12px; font-weight: 500; color: #888; text-decoration: none; transition: color 0.2s; }
+    .nav-pill a.link:hover { color: #000; }
+    .nav-pill .pill-pay { border: 1.5px solid #E0DADA; color: #555; padding: 7px 18px; border-radius: 100px; font-size: 12px; font-weight: 600; letter-spacing: 0.03em; text-decoration: none; transition: border-color 0.2s, color 0.2s; }
+    .nav-pill .pill-pay:hover { border-color: #000; color: #000; }
+    .nav-pill .pill-cta { background: #000; color: #fff; padding: 8px 20px; border-radius: 100px; font-size: 12px; font-weight: 600; letter-spacing: 0.03em; text-decoration: none; transition: background 0.2s, transform 0.15s cubic-bezier(0.34,1.56,0.64,1); }
+    .nav-pill .pill-cta:hover { background: #222; transform: scale(1.03); }
+
+    /* HAMBURGER */
+    .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 6px 8px; flex-direction: column; gap: 5px; align-items: center; justify-content: center; }
+    .hamburger span { display: block; width: 20px; height: 2px; background: #000; border-radius: 2px; }
+
+    /* MOBILE MENU */
+    .mobile-menu { display: none; position: fixed; inset: 0; background: #fff; z-index: 199; flex-direction: column; padding: 96px 32px 48px; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-family: 'Bebas Neue', sans-serif; font-size: 52px; color: #000; text-decoration: none; letter-spacing: -0.01em; line-height: 1.1; border-bottom: 1px solid #F0F0F0; padding: 16px 0; transition: color 0.15s; }
+    .mobile-menu a:hover { color: #FF4520; }
+    .mobile-menu a.m-pay { color: #FF4520; }
+    .mobile-menu-footer { margin-top: auto; display: flex; gap: 20px; }
+    .mobile-menu-footer a { font-size: 11px; font-family: 'Inter', sans-serif; color: #999; text-decoration: none; letter-spacing: 0.08em; text-transform: uppercase; border-bottom: none; padding: 0; }
+
+    /* HERO */
+    .hero { min-height: 100vh; background: #000; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 48px 72px; }
+    .hero-gradient { position: absolute; bottom: 0; left: 0; right: 0; height: 55%; background: linear-gradient(to top, rgba(255,68,20,0.16) 0%, transparent 100%); pointer-events: none; }
+    .hero-headline { font-family: 'Bebas Neue', sans-serif; font-size: clamp(72px,16.5vw,240px); line-height: 0.87; letter-spacing: -0.01em; color: #F0EBE3; position: relative; z-index: 2; }
+    .hero-headline .accent { color: #FF4520; }
+    .hero-eyebrow { position: absolute; top: 120px; left: 48px; font-size: 11px; color: #444; letter-spacing: 0.18em; text-transform: uppercase; z-index: 2; }
+    .hero-sub { position: absolute; bottom: 80px; right: 48px; text-align: right; color: #555; font-size: 13px; line-height: 1.75; z-index: 2; }
+    .scroll-hint { position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #3A3A3A; z-index: 2; }
+    .side-tag { position: absolute; left: 14px; top: 50%; transform: translateY(-50%) rotate(-90deg); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #2A2A2A; white-space: nowrap; z-index: 2; }
+
+    .sl { background: #F4F1EC; }
+    .sd { background: #0A0A0A; }
+
+    /* WRAPPERS */
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
+    .wrap-sm { max-width: 760px; margin: 0 auto; padding: 0 48px; }
+
+    /* ABOUT */
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; padding-top: 36px; border-top: 1px solid #DDD; }
+
+    /* SERVICES */
+    .rule { width: 100%; border: none; border-top: 1px solid #1C1C1C; }
+    .service-row { display: flex; align-items: flex-start; gap: 32px; padding: 40px 0; transition: padding-left 0.3s ease; cursor: default; }
+    .service-row:hover { padding-left: 10px; }
+    .svc-num { font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: #FF4520; letter-spacing: 0.06em; min-width: 36px; padding-top: 6px; }
+    .svc-name { font-family: 'Bebas Neue', sans-serif; font-size: clamp(36px,5.5vw,72px); color: #F0EBE3; line-height: 0.95; letter-spacing: -0.01em; flex: 1; }
+    .svc-desc { font-size: 13px; color: #555; line-height: 1.75; max-width: 260px; padding-top: 6px; }
+    .svc-check { font-size: 12px; color: #3A3A3A; margin-top: 14px; display: flex; flex-direction: column; gap: 5px; list-style: none; }
+    .svc-check li::before { content: '✓  '; color: #FF4520; }
+
+    /* PORTFOLIO */
+    .port-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .port-card { position: relative; overflow: hidden; cursor: pointer; display: block; }
+    .port-card img { width: 100%; object-fit: cover; display: block; filter: saturate(0.8); transition: transform 0.55s cubic-bezier(0.22,1,0.36,1), filter 0.4s ease; }
+    .port-card:hover img { transform: scale(1.04); filter: saturate(1); }
+    .port-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 55%); }
+    .port-meta { position: absolute; bottom: 0; left: 0; right: 0; padding: 24px 28px; display: flex; justify-content: space-between; align-items: flex-end; }
+    .port-client { font-size: 10px; font-weight: 700; color: #FF4520; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; }
+    .port-title { font-family: 'Bebas Neue', sans-serif; color: #fff; letter-spacing: -0.01em; line-height: 1; }
+    .port-tags { font-size: 10px; color: #888; letter-spacing: 0.1em; text-transform: uppercase; text-align: right; }
+
+    /* PROCESS */
+    .process-grid { display: grid; grid-template-columns: repeat(4,1fr); }
+    .process-step { padding: 32px; border-right: 1px solid #1C1C1C; }
+    .process-step:first-child { padding-left: 0; }
+    .process-step:last-child { border-right: none; padding-right: 0; }
+    .step-num { font-family: 'Bebas Neue', sans-serif; font-size: 64px; color: #1C1C1C; line-height: 1; margin-bottom: 20px; }
+
+    /* TESTIMONIALS */
+    .testi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; max-width: 900px; }
+    .quote-mark { font-family: 'Bebas Neue', sans-serif; font-size: 100px; color: #FF4520; line-height: 0.75; margin-bottom: 4px; }
+
+    /* FORM */
+    .fi { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid #222; border-radius: 4px; padding: 13px 16px; color: #F0EBE3; font-size: 14px; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.2s; }
+    .fi:focus { border-color: #FF4520; }
+    .fi::placeholder { color: #3A3A3A; }
+    .fl { display: block; font-size: 10px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: #444; margin-bottom: 8px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    /* BUTTON */
+    .btn-accent { background: #FF4520; color: #fff; padding: 15px 36px; border-radius: 4px; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; border: none; cursor: pointer; display: inline-block; text-decoration: none; transition: background 0.2s, transform 0.2s cubic-bezier(0.34,1.56,0.64,1); }
+    .btn-accent:hover { background: #E03810; transform: translateY(-2px); }
+    .btn-accent:active { transform: translateY(0); }
+
+    /* FOOTER */
+    .footer-inner { max-width: 1200px; margin: 0 auto; padding: 0 48px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; }
+
+    /* ═══ MOBILE ═══ */
+    @media (max-width: 768px) {
+      .nav-pill { left: 16px !important; right: 16px !important; transform: none !important; width: auto !important; padding: 10px 12px 10px 18px !important; gap: 0 !important; justify-content: space-between; }
+      .nav-pill a.link, .nav-pill .pill-pay, .nav-pill .pill-cta { display: none !important; }
+      .hamburger { display: flex !important; }
+
+      .hero { padding: 0 20px 56px !important; }
+      .hero-eyebrow { left: 20px !important; top: 90px !important; }
+      .hero-sub { display: none !important; }
+      .side-tag { display: none !important; }
+      .scroll-hint { display: none !important; }
+
+      .wrap { padding: 0 20px !important; }
+      .wrap-sm { padding: 0 20px !important; }
+      .sl, .sd { padding: 56px 0 !important; }
+
+      .about-grid { grid-template-columns: 1fr !important; gap: 36px !important; }
+
+      .service-row { flex-direction: column !important; gap: 16px !important; }
+      .service-row:hover { padding-left: 0 !important; }
+      .svc-desc { max-width: 100% !important; }
+
+      .port-grid { grid-template-columns: 1fr !important; }
+      .port-meta { padding: 16px !important; }
+      .port-tags { display: none; }
+
+      .process-grid { grid-template-columns: 1fr 1fr !important; }
+      .process-step { padding: 24px 12px !important; border-right: none !important; border-bottom: 1px solid #1C1C1C !important; }
+      .process-step:last-child { border-bottom: none !important; }
+      .process-step:nth-child(odd) { padding-left: 0 !important; border-right: 1px solid #1C1C1C !important; }
+      .process-step:nth-child(even) { padding-right: 0 !important; }
+      .step-num { font-size: 44px !important; margin-bottom: 12px !important; }
+
+      .testi-grid { grid-template-columns: 1fr !important; gap: 48px !important; max-width: 100% !important; }
+      .quote-mark { font-size: 72px !important; }
+
+      .form-row { grid-template-columns: 1fr !important; }
+
+      .footer-inner { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; padding: 0 20px !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#services" onclick="closeMenu()">Services</a>
+  <a href="#work" onclick="closeMenu()">Work</a>
+  <a href="#process" onclick="closeMenu()">Process</a>
+  <a href="#contact" onclick="closeMenu()">Contact</a>
+  <a href="/pay" class="m-pay">Pay Invoice</a>
+  <a href="#contact" onclick="closeMenu()" style="margin-top:8px;font-size:32px;background:#FF4520;color:#fff;padding:12px 24px;border-radius:4px;border-bottom:none;">Get a Quote →</a>
+  <div class="mobile-menu-footer">
+    <a href="/terms">Terms</a>
+    <a href="/contract">Client Contract</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav-pill">
+  <a href="#" class="logo">Simple.</a>
+  <a href="#services" class="link">Services</a>
+  <a href="#work" class="link">Work</a>
+  <a href="#process" class="link">Process</a>
+  <a href="#contact" class="link">Contact</a>
+  <a href="/pay" class="pill-pay">Pay Invoice</a>
+  <a href="#contact" class="pill-cta">Get a Quote</a>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-gradient"></div>
+  <span class="side-tag">Simple Design — Web & Creative</span>
+  <p class="hero-eyebrow">Web Design & Digital Presence</p>
+  <div class="hero-sub">
+    You're building something great.<br/>
+    Let's make sure people notice.
+  </div>
+  <h1 class="hero-headline">
+    Make it.<br/>
+    <span class="accent">Simple.</span>
+  </h1>
+  <p class="scroll-hint">↓ Scroll</p>
+</section>
+
+<!-- WHO WE ARE -->
+<section class="sl" style="padding: 96px 0;">
+  <div class="wrap">
+    <div class="about-grid">
+      <div>
+        <h2 class="bebas" style="font-size:clamp(52px,6.5vw,84px);color:#0A0A0A;line-height:0.93;letter-spacing:-0.01em;margin-bottom:28px;">
+          Who<br/>are we?
+        </h2>
+        <p style="font-size:15px;color:#555;line-height:1.85;margin-bottom:18px;">
+          Simple Design is a creative studio focused on one thing: building websites that make your business look its best and turn visitors into customers.
+        </p>
+        <p style="font-size:15px;color:#555;line-height:1.85;">
+          No bloated agencies. No generic templates. Just focused, high-craft web design that actually moves the needle for small businesses and solo founders.
+        </p>
+      </div>
+      <div>
+        <p style="font-size:10px;font-weight:700;color:#0A0A0A;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:20px;">Our work helps you:</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:14px;margin-bottom:48px;">
+          <li style="display:flex;align-items:center;gap:14px;font-size:16px;color:#1A1A1A;">
+            <span style="color:#FF4520;font-weight:700;">→</span> Get found online
+          </li>
+          <li style="display:flex;align-items:center;gap:14px;font-size:16px;color:#1A1A1A;">
+            <span style="color:#FF4520;font-weight:700;">→</span> Convert visitors into paying clients
+          </li>
+          <li style="display:flex;align-items:center;gap:14px;font-size:16px;color:#1A1A1A;">
+            <span style="color:#FF4520;font-weight:700;">→</span> Build a brand worth remembering
+          </li>
+          <li style="display:flex;align-items:center;gap:14px;font-size:16px;color:#1A1A1A;">
+            <span style="color:#FF4520;font-weight:700;">→</span> Stand out from the competition
+          </li>
+        </ul>
+        <div class="stats-grid">
+          <div>
+            <p class="bebas" style="font-size:52px;color:#0A0A0A;line-height:1;">20+</p>
+            <p style="font-size:11px;color:#999;margin-top:2px;">Sites launched</p>
+          </div>
+          <div>
+            <p class="bebas" style="font-size:52px;color:#0A0A0A;line-height:1;">2wk</p>
+            <p style="font-size:11px;color:#999;margin-top:2px;">Avg. delivery</p>
+          </div>
+          <div>
+            <p class="bebas" style="font-size:52px;color:#0A0A0A;line-height:1;">100%</p>
+            <p style="font-size:11px;color:#999;margin-top:2px;">Satisfaction</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services" class="sd" style="padding: 80px 0 96px;">
+  <div class="wrap">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:48px;flex-wrap:wrap;gap:8px;">
+      <p style="font-size:10px;font-weight:700;color:#FF4520;letter-spacing:0.16em;text-transform:uppercase;">What We Do</p>
+      <p style="font-size:12px;color:#333;">What we specialize in</p>
+    </div>
+    <hr class="rule" />
+    <div class="service-row">
+      <span class="svc-num">01</span>
+      <div style="flex:1;">
+        <p class="svc-name">Website Design<br/>&amp; Development</p>
+      </div>
+      <div class="svc-desc">
+        Custom-built sites designed to convert visitors into customers. Fast, mobile-first, built to represent your brand with precision.
+        <ul class="svc-check">
+          <li>Custom design & layout</li>
+          <li>Mobile responsive</li>
+          <li>SEO optimized</li>
+          <li>Fast delivery</li>
+        </ul>
+      </div>
+    </div>
+    <hr class="rule" />
+  </div>
+</section>
+
+<!-- WORK -->
+<section id="work" class="sl" style="padding: 80px 0 96px;">
+  <div class="wrap">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:40px;flex-wrap:wrap;gap:8px;">
+      <h2 class="bebas" style="font-size:clamp(44px,5.5vw,68px);color:#0A0A0A;letter-spacing:-0.01em;">Selected Work</h2>
+      <a href="#contact" style="font-size:11px;color:#999;text-decoration:none;letter-spacing:0.1em;text-transform:uppercase;">All Projects →</a>
+    </div>
+    <div class="port-card" style="margin-bottom:12px;border-radius:6px;">
+      <img src="https://placehold.co/1200x540/1A1714/FF4520?text=." alt="Artisan Bakery" style="aspect-ratio:21/9;border-radius:6px;" />
+      <div class="port-overlay" style="border-radius:6px;"></div>
+      <div class="port-meta">
+        <div>
+          <p class="port-client">Artisan Bakery Co. // Brand</p>
+          <p class="port-title" style="font-size:clamp(22px,3vw,44px);">Website Redesign</p>
+        </div>
+        <p class="port-tags">Web Design<br/>+ SEO</p>
+      </div>
+    </div>
+    <div class="port-grid">
+      <div class="port-card" style="border-radius:6px;">
+        <img src="https://placehold.co/600x380/1E2A24/5A9E78?text=." alt="Verde Landscaping" style="aspect-ratio:16/10;border-radius:6px;" />
+        <div class="port-overlay" style="border-radius:6px;"></div>
+        <div class="port-meta">
+          <div>
+            <p class="port-client">Verde Landscaping // Local</p>
+            <p class="port-title" style="font-size:clamp(18px,2.5vw,34px);">Website Redesign</p>
+          </div>
+          <p class="port-tags">Web Design<br/>+ SEO</p>
+        </div>
+      </div>
+      <div class="port-card" style="border-radius:6px;">
+        <img src="https://placehold.co/600x380/1A1E2E/6A7DB0?text=." alt="Apex Consulting" style="aspect-ratio:16/10;border-radius:6px;" />
+        <div class="port-overlay" style="border-radius:6px;"></div>
+        <div class="port-meta">
+          <div>
+            <p class="port-client">Apex Consulting // Corporate</p>
+            <p class="port-title" style="font-size:clamp(18px,2.5vw,34px);">Website Design</p>
+          </div>
+          <p class="port-tags">Web Design<br/>+ SEO</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process" class="sd" style="padding: 80px 0 96px;">
+  <div class="wrap">
+    <div style="margin-bottom:56px;">
+      <p style="font-size:10px;font-weight:700;color:#FF4520;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:14px;">How It Works</p>
+      <h2 class="bebas" style="font-size:clamp(44px,6vw,76px);color:#F0EBE3;letter-spacing:-0.01em;line-height:0.95;">Simple process.<br/>Serious results.</h2>
+    </div>
+    <div class="process-grid">
+      <div class="process-step" style="padding-left:0;">
+        <p class="step-num">01</p>
+        <h3 style="font-size:14px;font-weight:600;color:#F0EBE3;margin-bottom:10px;">Discovery Call</h3>
+        <p style="font-size:13px;color:#555;line-height:1.75;">We learn your goals, brand, and what success looks like for your business.</p>
+      </div>
+      <div class="process-step">
+        <p class="step-num">02</p>
+        <h3 style="font-size:14px;font-weight:600;color:#F0EBE3;margin-bottom:10px;">Design & Plan</h3>
+        <p style="font-size:13px;color:#555;line-height:1.75;">We craft a design tailored to your brand and walk you through it before building.</p>
+      </div>
+      <div class="process-step">
+        <p class="step-num">03</p>
+        <h3 style="font-size:14px;font-weight:600;color:#F0EBE3;margin-bottom:10px;">Build & Refine</h3>
+        <p style="font-size:13px;color:#555;line-height:1.75;">We develop and refine with your feedback until every detail is exactly right.</p>
+      </div>
+      <div class="process-step" style="padding-right:0;">
+        <p class="step-num">04</p>
+        <h3 style="font-size:14px;font-weight:600;color:#F0EBE3;margin-bottom:10px;">Launch & Grow</h3>
+        <p style="font-size:13px;color:#555;line-height:1.75;">Go live with confidence. We handle final QA, domain setup, and stay on for support.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="sl" style="padding: 96px 0;">
+  <div class="wrap">
+    <p style="font-size:10px;font-weight:700;color:#FF4520;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:48px;">Client Love</p>
+    <div class="testi-grid">
+      <div>
+        <div class="quote-mark">"</div>
+        <p style="font-size:15px;color:#1A1A1A;line-height:1.8;margin:4px 0 28px;">"Our new website completely changed how clients perceive us. Bookings went up within the first month. Couldn't be happier."</p>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <img src="https://placehold.co/34x34/FF4520/FFF?text=J" alt="" style="width:34px;height:34px;border-radius:50%;" />
+          <div>
+            <p style="font-size:13px;font-weight:600;color:#1A1A1A;">Jessica M.</p>
+            <p style="font-size:11px;color:#999;margin-top:2px;">Owner, Bloom Florals</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="quote-mark">"</div>
+        <p style="font-size:15px;color:#1A1A1A;line-height:1.8;margin:4px 0 28px;">"Fast, professional, and genuinely talented. They delivered everything on time — the design was exactly what I envisioned, actually better."</p>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <img src="https://placehold.co/34x34/555/FFF?text=R" alt="" style="width:34px;height:34px;border-radius:50%;" />
+          <div>
+            <p style="font-size:13px;font-weight:600;color:#1A1A1A;">Ryan T.</p>
+            <p style="font-size:11px;color:#999;margin-top:2px;">Founder, Trail Running Co.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="sd" style="padding: 96px 0; position:relative; overflow:hidden;">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 110%, rgba(255,69,32,0.13) 0%, transparent 65%);pointer-events:none;"></div>
+  <div class="wrap-sm" style="text-align:center;position:relative;z-index:1;">
+    <p style="font-size:10px;font-weight:700;color:#FF4520;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:20px;">Let's Work Together</p>
+    <h2 class="bebas" style="font-size:clamp(48px,8.5vw,108px);color:#F0EBE3;letter-spacing:-0.01em;line-height:0.92;margin-bottom:20px;">
+      Ready to build<br/>something great?
+    </h2>
+    <p style="font-size:15px;color:#555;line-height:1.75;margin-bottom:44px;">
+      Tell us about your project. We'll get back to you within 24 hours with a plan.
+    </p>
+    <form style="text-align:left;display:flex;flex-direction:column;gap:14px;" onsubmit="return false;">
+      <div class="form-row">
+        <div>
+          <label class="fl">Name</label>
+          <input type="text" placeholder="Your name" class="fi" />
+        </div>
+        <div>
+          <label class="fl">Email</label>
+          <input type="email" placeholder="you@yoursite.com" class="fi" />
+        </div>
+      </div>
+      <div>
+        <label class="fl">What do you need?</label>
+        <select class="fi" style="color:#3A3A3A;">
+          <option value="">What are you looking for?</option>
+          <option style="color:#000;background:#fff;">New Website</option>
+          <option style="color:#000;background:#fff;">Website Redesign</option>
+          <option style="color:#000;background:#fff;">Landing Page</option>
+          <option style="color:#000;background:#fff;">Not sure yet</option>
+        </select>
+      </div>
+      <div>
+        <label class="fl">Tell us more</label>
+        <textarea rows="4" placeholder="Describe your project or goals..." class="fi" style="resize:none;"></textarea>
+      </div>
+      <button type="submit" class="btn-accent" style="width:100%;text-align:center;">Send Message</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="background:#000;padding:36px 0;border-top:1px solid #111;">
+  <div class="footer-inner">
+    <span class="bebas" style="font-size:22px;color:#F0EBE3;letter-spacing:0.03em;">Simple<span style="color:#FF4520;">.</span></span>
+    <nav style="display:flex;gap:24px;flex-wrap:wrap;">
+      <a href="#services" style="font-size:11px;color:#3A3A3A;text-decoration:none;letter-spacing:0.08em;text-transform:uppercase;">Services</a>
+      <a href="#work" style="font-size:11px;color:#3A3A3A;text-decoration:none;letter-spacing:0.08em;text-transform:uppercase;">Work</a>
+      <a href="#process" style="font-size:11px;color:#3A3A3A;text-decoration:none;letter-spacing:0.08em;text-transform:uppercase;">Process</a>
+      <a href="#contact" style="font-size:11px;color:#3A3A3A;text-decoration:none;letter-spacing:0.08em;text-transform:uppercase;">Contact</a>
+    </nav>
+    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+      <a href="/terms" style="font-size:11px;color:#2A2A2A;text-decoration:none;">Terms of Service</a>
+      <span style="color:#1A1A1A;">·</span>
+      <a href="/contract" style="font-size:11px;color:#2A2A2A;text-decoration:none;">Client Contract</a>
+    </div>
+    <p style="font-size:11px;color:#2A2A2A;">© 2025 Simple Design. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const t = document.querySelector(a.getAttribute('href'));
+      if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburgerBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+    document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+  });
+  function closeMenu() {
+    mobileMenu.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+</script>
+</body>
+</html>
